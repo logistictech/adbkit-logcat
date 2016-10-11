@@ -4,7 +4,7 @@ Chai = require 'chai'
 Chai.use require 'sinon-chai'
 {expect} = Chai
 
-Transform = require '../../src/logcat/transform'
+Transform = require '../../src/logcat/transform-posix'
 MockDuplex = require '../mock/duplex'
 
 describe 'Transform', ->

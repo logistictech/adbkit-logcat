@@ -5,7 +5,7 @@ class Transform extends Stream.Transform
     @savedR = null
     super options
 
-  # Sadly, the ADB shell is not very smart. It automatically converts every
+  # Sadly, the ADB shell is not very smart. On POSIX OSes it converts every
   # 0x0a ('\n') it can find to 0x0d 0x0a ('\r\n'). This also applies to binary
   # content. We could get rid of this behavior by setting `stty raw`, but
   # unfortunately it's not available by default (you'd have to install busybox)

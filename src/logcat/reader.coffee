@@ -1,7 +1,11 @@
 {EventEmitter} = require 'events'
 
 Parser = require './parser'
-Transform = require './transform'
+
+eol = require('os').EOL
+transformType = if eol is '\r\n' then 'win' else 'posix'
+Transform = require "./transform-#{transformType}"
+
 Priority = require './priority'
 
 class Reader extends EventEmitter
