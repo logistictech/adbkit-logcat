@@ -13,16 +13,23 @@ class Transform extends Stream.Transform
     lo = 0
     hi = 0
     if @savedR
-      chunk = @savedR + chunk
+      chunk = Buffer.concat([@savedR, chunk])
     last = chunk.length - 1
     while hi <= last
       if chunk[hi] is 0x0d
         count_elems_to_last = last - hi
         if count_elems_to_last is 0
           @savedR = chunk.slice hi
+          if hi isnt lo
+            this.push chunk.slice lo, hi
+            lo = hi + 1
         else if count_elems_to_last is 1
           if chunk[hi + 1] is 0x0d
-            @savedR = chunk.slice hi
+            @savedR = chunk.slice hi, last + 1
+            if hi isnt lo
+              this.push chunk.slice lo, hi
+            hi = hi + 2
+            lo = hi + 1
         else if chunk[hi + 1] is 0x0d and chunk[hi + 2] is 0x0a
           if hi isnt lo
             this.push chunk.slice lo, hi
