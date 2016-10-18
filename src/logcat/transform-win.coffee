@@ -17,13 +17,9 @@ class Transform extends Stream.Transform
     last = chunk.length - 1
     while hi <= last
       if chunk[hi] is 0x0d
-        if hi is last
+        if hi is last or (hi + 1 is last and chunk[last] is 0x0d)
           @savedR = chunk.slice hi
           break
-        else if last is hi + 1
-          if chunk[hi + 1] is 0x0d
-            @savedR = chunk.slice hi
-            break
         else if chunk[hi + 1] is 0x0d and chunk[hi + 2] is 0x0a
           unless hi is lo
             this.push chunk.slice lo, hi
