@@ -14,6 +14,7 @@ class Transform extends Stream.Transform
     hi = 0
     if @savedR
       chunk = Buffer.concat [@savedR, chunk]
+      @savedR = null
     last = chunk.length - 1
     while hi <= last
       if chunk[hi] is 0x0d

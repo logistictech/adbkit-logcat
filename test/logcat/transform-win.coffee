@@ -179,3 +179,44 @@ describe 'Transform', ->
     duplex.causeRead new Buffer [0x62, 0x0d, 0x0d]
     duplex.causeRead new Buffer [0x0a]
     duplex.causeEnd()
+
+  it "should clear saved 0x0d after processing of next chunk",
+    (done) ->
+      duplex = new MockDuplex
+      transform = new Transform
+      buffer = new Buffer ''
+      transform.on 'data', (data) ->
+        buffer = Buffer.concat [buffer, data]
+      transform.on 'end', ->
+        expect(buffer).to.have.length 4
+        expect(buffer[0]).to.equal 0x62
+        expect(buffer[1]).to.equal 0x0d
+        expect(buffer[2]).to.equal 0x37
+        expect(buffer[3]).to.equal 0x42
+        done()
+      duplex.pipe transform
+      duplex.causeRead new Buffer [0x62, 0x0d]
+      duplex.causeRead new Buffer [0x37]
+      duplex.causeRead new Buffer [0x42]
+      duplex.causeEnd()
+
+  it "should clear saved 0x0d 0x0d after processing of next chunk",
+    (done) ->
+      duplex = new MockDuplex
+      transform = new Transform
+      buffer = new Buffer ''
+      transform.on 'data', (data) ->
+        buffer = Buffer.concat [buffer, data]
+      transform.on 'end', ->
+        expect(buffer).to.have.length 5
+        expect(buffer[0]).to.equal 0x62
+        expect(buffer[1]).to.equal 0x0d
+        expect(buffer[2]).to.equal 0x0d
+        expect(buffer[3]).to.equal 0x37
+        expect(buffer[4]).to.equal 0x42
+        done()
+      duplex.pipe transform
+      duplex.causeRead new Buffer [0x62, 0x0d, 0x0d]
+      duplex.causeRead new Buffer [0x37]
+      duplex.causeRead new Buffer [0x42]
+      duplex.causeEnd()
